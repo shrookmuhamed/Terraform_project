@@ -11,7 +11,6 @@ This project automates the deployment of networking and compute resources on Ama
 - [Modules](#modules)
 - [Remote State and Locking](#remote-state-and-locking)
 - [Email Notification](#email-notification)
-- [Deployment](#deployment)
 - [Monitoring](#monitoring)
 
 ## Introduction ⬇️
@@ -55,9 +54,6 @@ Configure the `backend.tf` to use an AWS S3 bucket for remote state management a
 
 ## Email Notification
 Set up AWS SES for email notifications by verifying your email.
-
-## Deployment
-Follow the detailed steps in the [Usage](#usage) section to deploy your infrastructure. Ensure all permissions and settings are correctly configured before execution.
 
 ## Monitoring
 Implement monitoring through AWS CloudWatch and set up alerts to monitor resource utilization and system performance. Additionally, deploy AWS Lambda functions for automated response to specific alerts or conditions, enhancing operational resilience and proactive management of the infrastructure.
