@@ -26,15 +26,16 @@ Leveraging Terraform, this project facilitates the automation of networking and 
 - **Remote State and Locking**: Implements remote state storage with locking to prevent concurrent state modifications.
 - **Email Notification**: Integrates with AWS SES for sending notifications about infrastructure changes.
 - **RDS and ElastiCache**: Supports deployment of RDS and ElastiCache services.
-- **GitHub Integration**: Manages infrastructure code using GitHub for version control and collaboration.
+- **GitHub Integration**: Manages infrastructure code using GitHub for version control.
+- **Lambda Functions**: Deploys AWS Lambda functions to run serverless applications directly linked to AWS resources.
 
-## Prerequisites 🔔
+## Prerequisites 
 - AWS account with necessary permissions.
 - Terraform installed on your local machine.
 - AWS CLI configured with user access keys.
 - A verified email address for AWS SES notifications.
 
-## Usage 🗺️
+## Usage 
 1. Clone the repository to your local machine.
 2. Navigate to the project directory.
 3. Update `dev.tfvars` and `prod.tfvars` with your specific configurations.
@@ -53,10 +54,10 @@ Utilize pre-defined modules in the `modules/` directory for better organization 
 Configure the `backend.tf` to use an AWS S3 bucket for remote state management and enable state locking with DynamoDB to prevent concurrent modifications.
 
 ## Email Notification
-Set up AWS SES for email notifications by verifying your email and configuring `email_notification.tf`.
+Set up AWS SES for email notifications by verifying your email.
 
 ## Deployment
 Follow the detailed steps in the [Usage](#usage) section to deploy your infrastructure. Ensure all permissions and settings are correctly configured before execution.
 
 ## Monitoring
-Implement monitoring through AWS CloudWatch and set up alerts to monitor resource utilization and system performance.
+Implement monitoring through AWS CloudWatch and set up alerts to monitor resource utilization and system performance. Additionally, deploy AWS Lambda functions for automated response to specific alerts or conditions, enhancing operational resilience and proactive management of the infrastructure.
