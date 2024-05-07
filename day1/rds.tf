@@ -24,7 +24,7 @@ resource "aws_db_instance" "my_rds" {
   password                            = random_password.password.result
   iam_database_authentication_enabled = true
 
-  vpc_security_group_ids = [aws_security_group.ssh-3000.id]
+  vpc_security_group_ids = [aws_security_group.ssh-3000.id,aws_security_group.rds_sec_group.id]
 
   db_subnet_group_name = aws_db_subnet_group.subnet_group.name
 
