@@ -3,14 +3,17 @@ pipeline {
     parameters {
         choice(name: 'ENV', choices: ['dev', 'prod'], description: 'Select the environment to deploy')
     }
-    environment {
-        AWS_CREDENTIALS = credentials('aws_credentials')
-    }
     stages {
         stage('Initialize') {
             steps {
                 script {
-                    withEnv(["AWS_ACCESS_KEY_ID=${AWS_CREDENTIALS_USR}", "AWS_SECRET_ACCESS_KEY=${AWS_CREDENTIALS_PSW}"]) {
+                    // Securely bind credentials
+                    withCredentials([[
+                        $class: 'UsernamePasswordMultiBinding',
+                        credentialsId: 'aws_credentials',
+                        usernameVariable: 'AWS_ACCESS_KEY_ID',
+                        passwordVariable: 'AWS_SECRET_ACCESS_KEY'
+                    ]]) {
                         // Initialize Terraform
                         sh 'terraform init'
                     }
@@ -20,7 +23,7 @@ pipeline {
         stage('Select Workspace') {
             steps {
                 script {
-                    // Select Terraform workspace based on provided parameter
+                    // Select or create Terraform workspace based on the provided parameter
                     sh "terraform workspace select ${params.ENV} || terraform workspace new ${params.ENV}"
                 }
             }
@@ -28,8 +31,14 @@ pipeline {
         stage('Apply') {
             steps {
                 script {
-                    withEnv(["AWS_ACCESS_KEY_ID=${AWS_CREDENTIALS_USR}", "AWS_SECRET_ACCESS_KEY=${AWS_CREDENTIALS_PSW}"]) {
-                        // Apply Terraform configuration
+                    // Securely bind credentials again for the apply stage
+                    withCredentials([[
+                        $class: 'UsernamePasswordMultiBinding',
+                        credentialsId: 'aws_credentials',
+                        usernameVariable: 'AWS_ACCESS_KEY_ID',
+                        passwordVariable: 'AWS_SECRET_ACCESS_KEY'
+                    ]]) {
+                        // Apply Terraform configuration using the appropriate tfvars file for the environment
                         sh "terraform apply -auto-approve --var-file ${params.ENV}.tfvars"
                     }
                 }
