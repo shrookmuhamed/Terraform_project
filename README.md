@@ -1,4 +1,4 @@
-# Terraform Infrastructure Deployment for AWS using Jenkins Pipline
+# Terraform Infrastructure Deployment for AWS using Jenkins Pipeline
 
 This project automates the deployment of networking and compute resources on Amazon Web Services (AWS) using Terraform. It offers a modular and scalable approach to provision infrastructure across different environments like development and production.
 
