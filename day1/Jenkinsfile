@@ -34,8 +34,13 @@ pipeline {
             steps {
                script {
                     // Select or create Terraform workspace based on the provided parameter
-                    dir('day1') {  sh "terraform workspace select ${params.ENV} || terraform workspace new ${params.ENV}"
-                }}
+                   dir('day1'){ withCredentials([[
+                        $class: 'UsernamePasswordMultiBinding',
+                        credentialsId: 'aws_credentials',
+                        usernameVariable: 'AWS_ACCESS_KEY_ID',
+                        passwordVariable: 'AWS_SECRET_ACCESS_KEY'
+                    ]]) {  sh "terraform workspace select ${params.ENV} || terraform workspace new ${params.ENV}"
+                }}}
             }
         }
         stage('Apply') {
