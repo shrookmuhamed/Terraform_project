@@ -63,13 +63,13 @@ resource "aws_iam_role_policy_attachment" "attach_iam_policy_to_iam_role" {
 # Create a ZIP of Python Application
 data "archive_file" "zip_the_python_code" {
   type        = "zip"
-  source_dir  = "/home/shrouk/Documents/ITI/terraform/day1/python"
-  output_path = "/home/shrouk/Documents/ITI/terraform/day1/python/func.zip"
+  source_dir  = "${path.module}/python"
+  output_path = "${path.module}/python/func.zip"
 }
 
 # Add aws_lambda_function Function
 resource "aws_lambda_function" "terraform_lambda_func" {
-  filename      = "/home/shrouk/Documents/ITI/terraform/day1/python/func.zip"
+  filename      = "${path.module}/python/func.zip"
   function_name = "Lambda_Function_SES"
   role          = aws_iam_role.lambda_role.arn
   handler       = "func.lambda_handler"
