@@ -8,7 +8,7 @@ pipeline {
             steps {
                 script {
                     // Securely bind credentials
-                    withCredentials([[
+                     dir('day1'){ withCredentials([[
                         $class: 'UsernamePasswordMultiBinding',
                         credentialsId: 'aws_credentials',
                         usernameVariable: 'AWS_ACCESS_KEY_ID',
@@ -16,23 +16,23 @@ pipeline {
                     ]]) {
                         // Initialize Terraform
                         sh 'terraform init'
-                    }
+                    }}
                 }
             }
         }
         stage('Select Workspace') {
             steps {
-                script {
+               script {
                     // Select or create Terraform workspace based on the provided parameter
-                    sh "terraform workspace select ${params.ENV} || terraform workspace new ${params.ENV}"
-                }
+                    dir('day1') {  sh "terraform workspace select ${params.ENV} || terraform workspace new ${params.ENV}"
+                }}
             }
         }
         stage('Apply') {
             steps {
                 script {
                     // Securely bind credentials again for the apply stage
-                    withCredentials([[
+                     dir('day1'){ withCredentials([[
                         $class: 'UsernamePasswordMultiBinding',
                         credentialsId: 'aws_credentials',
                         usernameVariable: 'AWS_ACCESS_KEY_ID',
@@ -41,6 +41,17 @@ pipeline {
                         // Apply Terraform configuration using the appropriate tfvars file for the environment
                         sh "terraform apply -auto-approve --var-file ${params.ENV}.tfvars"
                     }
+ stage('Debug') {
+    steps {
+        script {
+            dir('day1') {
+                sh 'ls -la'  // Lists all files in the directory; adjust path as needed
+            }
+        }
+    }
+}
+
+                                }
                 }
             }
         }
