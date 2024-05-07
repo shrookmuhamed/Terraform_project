@@ -4,6 +4,15 @@ pipeline {
         choice(name: 'ENV', choices: ['dev', 'prod'], description: 'Select the environment to deploy')
     }
     stages {
+        stage('Debug') {
+    steps {
+        script {
+            dir('day1') {
+                sh 'ls -la'  // Lists all files in the directory; adjust path as needed
+            }
+        }
+    }
+}
         stage('Initialize') {
             steps {
                 script {
@@ -41,15 +50,6 @@ pipeline {
                         // Apply Terraform configuration using the appropriate tfvars file for the environment
                         sh "terraform apply -auto-approve --var-file ${params.ENV}.tfvars"
                     }
- stage('Debug') {
-    steps {
-        script {
-            dir('day1') {
-                sh 'ls -la'  // Lists all files in the directory; adjust path as needed
-            }
-        }
-    }
-}
 
                                 }
                 }
