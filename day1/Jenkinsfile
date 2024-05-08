@@ -2,65 +2,60 @@ pipeline {
     agent any
     parameters {
         choice(name: 'ENV', choices: ['dev', 'prod'], description: 'Select the environment to deploy')
+        choice(name: 'ACTION', choices: ['apply', 'destroy'], description: 'Choose action to perform: apply or destroy')
     }
     stages {
-        stage('Debug') {
-    steps {
-        script {
-            dir('day1') {
-                sh 'ls -la'  // Lists all files in the directory; adjust path as needed
-            }
-        }
-    }
-}
         stage('Initialize') {
             steps {
                 script {
-                    // Securely bind credentials
-                     dir('day1'){ withCredentials([[
-                        $class: 'UsernamePasswordMultiBinding',
-                        credentialsId: 'aws_credentials',
-                        usernameVariable: 'AWS_ACCESS_KEY_ID',
-                        passwordVariable: 'AWS_SECRET_ACCESS_KEY'
-                    ]]) {
-                        // Initialize Terraform
-
-                        sh 'terraform init'
-                    }}
+                    
+                        withCredentials([[
+                            $class: 'UsernamePasswordMultiBinding',
+                            credentialsId: 'aws_credentials',
+                            usernameVariable: 'AWS_ACCESS_KEY_ID',
+                            passwordVariable: 'AWS_SECRET_ACCESS_KEY'
+                        ]]) {
+                            // Initialize Terraform
+                            sh 'terraform init'
+                    }
                 }
             }
         }
         stage('Select Workspace') {
             steps {
-               script {
-                    // Select or create Terraform workspace based on the provided parameter
-                   dir('day1'){ withCredentials([[
-                        $class: 'UsernamePasswordMultiBinding',
-                        credentialsId: 'aws_credentials',
-                        usernameVariable: 'AWS_ACCESS_KEY_ID',
-                        passwordVariable: 'AWS_SECRET_ACCESS_KEY'
-                    ]]) {  sh "terraform workspace select ${params.ENV} || terraform workspace new ${params.ENV}"
-                }}}
+                script {
+                        withCredentials([[
+                            $class: 'UsernamePasswordMultiBinding',
+                            credentialsId: 'aws_credentials',
+                            usernameVariable: 'AWS_ACCESS_KEY_ID',
+                            passwordVariable: 'AWS_SECRET_ACCESS_KEY'
+                        ]]) {
+                            sh "terraform workspace select ${params.ENV} || terraform workspace new ${params.ENV}"
+                        
+                    }
+                }
             }
         }
-        stage('Apply') {
+        stage('Apply or Destroy') {
             steps {
                 script {
-                    // Securely bind credentials again for the apply stage
-                     dir('day1'){ withCredentials([[
-                        $class: 'UsernamePasswordMultiBinding',
-                        credentialsId: 'aws_credentials',
-                        usernameVariable: 'AWS_ACCESS_KEY_ID',
-                        passwordVariable: 'AWS_SECRET_ACCESS_KEY'
-                    ]]) {
-                        // Apply Terraform configuration using the appropriate tfvars file for the environment
-                        sh "terraform apply -auto-approve --var-file ${params.ENV}.tfvars"
-                    }
-
-                                }
+                  
+                        withCredentials([[
+                            $class: 'UsernamePasswordMultiBinding',
+                            credentialsId: 'aws_credentials',
+                            usernameVariable: 'AWS_ACCESS_KEY_ID',
+                            passwordVariable: 'AWS_SECRET_ACCESS_KEY'
+                        ]]) {
+                            // Conditionally apply or destroy based on user input
+                            if (params.ACTION == 'apply') {
+                                sh "terraform apply -auto-approve --var-file ${params.ENV}.tfvars"
+                            } else if (params.ACTION == 'destroy') {
+                                sh "terraform destroy -auto-approve --var-file ${params.ENV}.tfvars"
+                            }
+                        }
+                    
                 }
             }
         }
     }
 }
-
