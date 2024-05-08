@@ -4,11 +4,11 @@ pipeline {
         choice(name: 'ENV', choices: ['dev', 'prod'], description: 'Select the environment to deploy')
         choice(name: 'ACTION', choices: ['apply', 'destroy'], description: 'Choose action to perform: apply or destroy')
     }
-    stages {
+    
         stage('Initialize') {
             steps {
                 script {
-                    
+                    dir('day1') {
                         withCredentials([[
                             $class: 'UsernamePasswordMultiBinding',
                             credentialsId: 'aws_credentials',
@@ -17,6 +17,7 @@ pipeline {
                         ]]) {
                             // Initialize Terraform
                             sh 'terraform init'
+                        }
                     }
                 }
             }
@@ -24,6 +25,7 @@ pipeline {
         stage('Select Workspace') {
             steps {
                 script {
+                    dir('day1') {
                         withCredentials([[
                             $class: 'UsernamePasswordMultiBinding',
                             credentialsId: 'aws_credentials',
@@ -31,7 +33,7 @@ pipeline {
                             passwordVariable: 'AWS_SECRET_ACCESS_KEY'
                         ]]) {
                             sh "terraform workspace select ${params.ENV} || terraform workspace new ${params.ENV}"
-                        
+                        }
                     }
                 }
             }
@@ -39,7 +41,7 @@ pipeline {
         stage('Apply or Destroy') {
             steps {
                 script {
-                  
+                    dir('day1') {
                         withCredentials([[
                             $class: 'UsernamePasswordMultiBinding',
                             credentialsId: 'aws_credentials',
@@ -53,7 +55,7 @@ pipeline {
                                 sh "terraform destroy -auto-approve --var-file ${params.ENV}.tfvars"
                             }
                         }
-                    
+                    }
                 }
             }
         }
