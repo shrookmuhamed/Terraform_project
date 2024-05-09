@@ -33,33 +33,33 @@ pipeline {
                             passwordVariable: 'AWS_SECRET_ACCESS_KEY'
                         ]]) {
                             sh "terraform workspace select ${params.ENV} || terraform workspace new ${params.ENV}"
-                              sh "terraform plan --var-file ${params.ENV}.tfvars"
+                              // sh "terraform plan --var-file ${params.ENV}.tfvars"
                             
                         }
                     }
                 }
             }
         }
-        // stage('Apply or Destroy') {
-        //     steps {
-        //         script {
-        //             dir('day1') {
-        //                 withCredentials([[
-        //                     $class: 'UsernamePasswordMultiBinding',
-        //                     credentialsId: 'aws_credentials',
-        //                     usernameVariable: 'AWS_ACCESS_KEY_ID',
-        //                     passwordVariable: 'AWS_SECRET_ACCESS_KEY'
-        //                 ]]) {
-        //                     // Conditionally apply or destroy based on user input
-        //                     if (params.ACTION == 'apply') {
-        //                         sh "terraform apply -auto-approve --var-file ${params.ENV}.tfvars"
-        //                     } else if (params.ACTION == 'destroy') {
-        //                         sh "terraform destroy -auto-approve --var-file ${params.ENV}.tfvars"
-        //                     }
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
+        stage('Apply or Destroy') {
+            steps {
+                script {
+                    dir('day1') {
+                        withCredentials([[
+                            $class: 'UsernamePasswordMultiBinding',
+                            credentialsId: 'aws_credentials',
+                            usernameVariable: 'AWS_ACCESS_KEY_ID',
+                            passwordVariable: 'AWS_SECRET_ACCESS_KEY'
+                        ]]) {
+                            // Conditionally apply or destroy based on user input
+                            if (params.ACTION == 'apply') {
+                                sh "terraform apply -auto-approve --var-file ${params.ENV}.tfvars"
+                            } else if (params.ACTION == 'destroy') {
+                                sh "terraform destroy -auto-approve --var-file ${params.ENV}.tfvars"
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }
