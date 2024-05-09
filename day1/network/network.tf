@@ -88,7 +88,7 @@ resource "aws_subnet" "privsubnet1" {
 resource "aws_subnet" "privsubnet2" {
   vpc_id     = aws_vpc.vpc1.id
   cidr_block = var.priv_subnet2_cidr
-    availability_zone       = "us-east-1a" 
+    availability_zone       = "us-east-1b" 
 
   tags = {
     Name = "privsubnet2"
