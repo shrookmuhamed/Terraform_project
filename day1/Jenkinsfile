@@ -40,7 +40,7 @@ pipeline {
                 }
             }
         }
-        tage('Plan') {
+        stage('Plan') {
             steps {
                 script {
                     dir('day1') {
