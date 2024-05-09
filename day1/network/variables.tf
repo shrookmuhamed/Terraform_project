@@ -7,8 +7,8 @@ variable pub_subnet_cidr {
   
 }
 variable pub_subnet2_cidr{
-  type = string
-  
+type = string
+
 }
 variable priv_subnet_cidr {
   type = string
