@@ -18,7 +18,7 @@ This project automates the deployment of networking and compute resources on Ama
 Leveraging Terraform, this project facilitates the automation of networking and compute resource provisioning on AWS. It adheres to best practices such as infrastructure-as-code (IaC) and modularization, ensuring consistency, scalability, and reliability of infrastructure.
 
 ## Features ✔️
-- **Networking**: Configures VPC, Internet Gateway, NAT Gateway, subnets, and route tables.
+- **Networking**: Configures VPC, Internet Gateway, NAT Gateway, subnets,app load balancer and route tables.
 - **Compute**: Deploys EC2 instances with predefined security groups.
 - **Workspaces**: Manages separate Terraform workspaces for different deployment environments.
 - **Variables**: Utilizes variable files for environment-specific configurations.
