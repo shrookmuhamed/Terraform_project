@@ -12,6 +12,7 @@ This project automates the deployment of networking and compute resources on Ama
 - [Remote State and Locking](#remote-state-and-locking)
 - [Email Notification](#email-notification)
 - [Monitoring](#monitoring)
+- [Jenkins Pipeline Integration](#jenkins-pipeline-integration)
 
 ## Introduction ⬇️
 Leveraging Terraform, this project facilitates the automation of networking and compute resource provisioning on AWS. It adheres to best practices such as infrastructure-as-code (IaC) and modularization, ensuring consistency, scalability, and reliability of infrastructure.
@@ -33,6 +34,7 @@ Leveraging Terraform, this project facilitates the automation of networking and 
 - Terraform installed on your local machine.
 - AWS CLI configured with user access keys.
 - A verified email address for AWS SES notifications.
+- Jenkins server with necessary plugins installed for running Terraform pipelines.
 
 ## Usage 
 1. Clone the repository to your local machine.
@@ -57,3 +59,10 @@ Set up AWS SES for email notifications by verifying your email.
 
 ## Monitoring
 Implement monitoring through AWS CloudWatch and set up alerts to monitor resource utilization and system performance. Additionally, deploy AWS Lambda functions for automated response to specific alerts or conditions, enhancing operational resilience and proactive management of the infrastructure.
+
+## Jenkins Pipeline Integration
+This project is integrated with a Jenkins CI/CD pipeline to automate the deployment process. The pipeline handles:
+- Fetching the latest code from the repository.
+- Running `terraform plan` to show changes.
+- Applying `terraform apply` to update the AWS infrastructure according to the latest configurations.
+- Managing environment-specific configurations through Jenkins environment variables or parameterized builds.
