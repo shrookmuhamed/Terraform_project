@@ -3,6 +3,6 @@ terraform {
     bucket         = "terraform-day1-shrouk"
     key            = "terraform.tfstate"
     region         = "us-east-1"
-    dynamodb_table = "state-lock"
+    # dynamodb_table = "state-lock"
   }
 }
