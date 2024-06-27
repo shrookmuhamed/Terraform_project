@@ -1,0 +1,63 @@
+#First pipeline, triggered when there is a PR 
+trigger:
+  - main
+
+pr:
+  - main
+
+parameters:
+- name: ENV
+  displayName: ENV
+  type: string
+  default: dev
+  values:
+    - dev
+    - prod
+variables:
+- group: aws-credentials
+
+jobs:
+- job: Terraform_Plan
+  displayName: 'Terraform Plan when PR'
+  pool:
+    name: aws-agent
+
+  steps:
+  - checkout: self
+    persistCredentials: true
+
+
+  - task: TerraformInstaller@1
+    inputs:
+      terraformVersion: 'latest'
+
+ 
+  - script: |
+      git clone https://github.com/shrookmuhamed/Terraform_project.git
+      cd Terraform_project/day1  
+    displayName: 'Clone Terraform repository'
+
+  # - script: terraform init
+  #   displayName: 'Terraform Init'  
+  #   env:
+  #     AWS_ACCESS_KEY_ID: $(AWS_ACCESS_KEY_ID)
+  #     AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
+  #     AWS_DEFAULT_REGION: us-east-1
+
+  - script: |
+      terraform init
+      terraform workspace select ${{ parameters.ENV }} || terraform workspace new ${{ parameters.ENV }}
+      terraform plan --var-file ${params.ENV}.tfvars
+    displayName: 'init/Select or Create Terraform Workspace/plan '
+    env:
+      AWS_ACCESS_KEY_ID: $(AWS_ACCESS_KEY_ID)
+      AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
+      AWS_DEFAULT_REGION: us-east-1
+
+  # - script: |
+  #     terraform plan -out=tfplan
+  #   displayName: 'Terraform Plan'
+  #   env:
+  #     AWS_ACCESS_KEY_ID: $(AWS_ACCESS_KEY_ID)
+  #     AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
+  #     AWS_DEFAULT_REGION: us-east-1
